@@ -7,18 +7,18 @@ const emit = defineEmits<{
   (e: "setPerson", value: null): void;
 }>();
 const props = defineProps<{ person: ResultsEntity }>();
-const {
-  cell,
-  dob,
-  email,
-  gender,
-  location,
-  login,
-  name,
-  nat,
-  phone,
-  picture,
-} = props.person;
+// const {
+//   cell,
+//   dob,
+//   email,
+//   gender,
+//   location,
+//   login,
+//   name,
+//   nat,
+//   phone,
+//   picture,
+// } = props.person;
 
 const userIsFavorite = computed(() => {
   const users = store.state.favoriteUsers;
@@ -37,7 +37,9 @@ const addToFavorites = (person: ResultsEntity) => {
 };
 
 const passwordType = ref(true);
-let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
+let imgUrl = computed(
+  () => `https://flagcdn.com/24x18/${props.person.nat.toLowerCase()}.png`
+);
 </script>
 
 <template>
@@ -63,17 +65,22 @@ let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
     <!-- Card -->
     <div class="flex-grow p-4 h-full">
       <div class="bg-gray-200 h-full p-2 rounded-lg text-black">
-        <div class="grid grid-cols-4 grid-rows-4 gap-2 h-full">
+        <div class="grid grid-cols-4 grid-rows-3 gap-2 h-full">
           <!--  -->
           <div
-            class="col-span-4 row-span-1 bg-gray-50 h-full flex justify-center items-center"
+            class="col-span-2 row-span-1 bg-gray-50 h-full flex justify-center items-center"
           >
-            <img :src="picture.large" :alt="name.first" class="md:h-full rounded h-3/4" />
+            <img
+              :src="props.person.picture.large"
+              :alt="props.person.name.first"
+              class="md:h-full rounded-lg h-3/4 p-2"
+            />
           </div>
           <!--  -->
-          <div class="col-span-4 bg-gray-50 flex items-center justify-center h-full">
+          <div class="col-span-2 bg-gray-50 flex items-center justify-center h-full">
             <p class="text-3xl font-semibold text-center">
-              {{ name.title }} {{ name.first }} {{ name.last }}
+              {{ props.person.name.title }} {{ props.person.name.first }}
+              {{ props.person.name.last }}
             </p>
           </div>
           <!--  -->
@@ -85,7 +92,7 @@ let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
                   <div class="flex justify-between">
                     <div class="font-semibold">Gender</div>
                     <div>
-                      <span>{{ gender }}</span>
+                      <span>{{ props.person.gender }}</span>
                     </div>
                   </div>
                 </li>
@@ -93,7 +100,9 @@ let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
                   <div class="flex justify-between">
                     <div class="font-semibold">Date Of Birth</div>
                     <div>
-                      <span>{{ new Date(dob.date).toLocaleDateString() }}</span>
+                      <span>{{
+                        new Date(props.person.dob.date).toLocaleDateString()
+                      }}</span>
                     </div>
                   </div>
                 </li>
@@ -101,7 +110,7 @@ let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
                   <div class="flex justify-between">
                     <div class="font-semibold">Age</div>
                     <div>
-                      <span>{{ dob.age }}</span>
+                      <span>{{ props.person.dob.age }}</span>
                     </div>
                   </div>
                 </li>
@@ -109,24 +118,15 @@ let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
                   <div class="flex justify-between flex-wrap">
                     <div class="font-semibold">Place Of Birth</div>
                     <div class="flex gap-2">
-                      {{ nat }}
-                      <img
-                        :src="imgUrl"
-                        srcset="
-                          https://flagcdn.com/32x24/za.png 2x,
-                          https://flagcdn.com/48x36/za.png 3x
-                        "
-                        width="24"
-                        height="18"
-                        alt="South Africa"
-                      />
+                      {{ props.person.nat }}
+                      <img :src="imgUrl" width="24" height="18" alt="Flag Icon" />
                     </div>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
-          <div class="col-span-2 text-center bg-gray-50">
+          <div class="col-span-2 text-center row-span-1 bg-gray-50">
             <p class="underline font-medium">Contact Information</p>
             <div>
               <ul class="pt-5">
@@ -134,7 +134,7 @@ let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
                   <div class="flex justify-between">
                     <div class="font-semibold">Phone Number</div>
                     <div class="text-green-500 underline">
-                      <a :href="`tel:` + phone">{{ phone }}</a>
+                      <a :href="`tel:` + props.person.phone">{{ props.person.phone }}</a>
                     </div>
                   </div>
                 </li>
@@ -142,7 +142,7 @@ let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
                   <div class="flex justify-between">
                     <div class="font-semibold">Cell Number</div>
                     <div class="text-green-500 underline">
-                      <a :href="`tel:` + cell">{{ cell }}</a>
+                      <a :href="`tel:` + props.person.cell">{{ props.person.cell }}</a>
                     </div>
                   </div>
                 </li>
@@ -150,33 +150,36 @@ let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
                   <div class="flex justify-between flex-wrap">
                     <div class="font-semibold">Email</div>
                     <div class="text-green-500 underline">
-                      <a :href="`mailto:` + email">{{ email }}</a>
+                      <a :href="`mailto:` + props.person.email">{{
+                        props.person.email
+                      }}</a>
                     </div>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
-          <div class="col-span-2 text-center row-span-2 bg-gray-50">
+          <div class="col-span-2 text-center row-span-1 bg-gray-50">
             <p class="underline font-medium">Location Information</p>
             <div class="flex h-full justify-center items-center">
               <a
-                :href="`https://www.google.com/maps/search/?api=1&query=${location.coordinates.latitude},${location.coordinates.longitude}`"
+                :href="`https://www.google.com/maps/search/?api=1&query=${props.person.location.coordinates.latitude},${props.person.location.coordinates.longitude}`"
                 class="text-green-500 underline"
                 target="_blank"
               >
                 <address>
-                  {{ location.street.name }}{{ location.street.number }}
+                  {{ props.person.location.street.name
+                  }}{{ props.person.location.street.number }}
                   <br />
-                  {{ location.city }} {{ location.state }}
-                  {{ location.postcode }}
+                  {{ props.person.location.city }} {{ props.person.location.state }}
+                  {{ props.person.location.postcode }}
                   <br />
-                  {{ location.country }}
+                  {{ props.person.location.country }}
                 </address>
               </a>
             </div>
           </div>
-          <div class="col-span-2 text-center row-span-2 bg-gray-50">
+          <div class="col-span-2 text-center row-span-1 bg-gray-50">
             <p class="underline font-medium">Credential</p>
             <div>
               <ul class="pt-5">
@@ -184,7 +187,7 @@ let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
                   <div class="flex justify-between">
                     <div class="font-semibold">Username</div>
                     <div>
-                      <input type="text" :value="login.username" disabled />
+                      <input type="text" :value="props.person.login.username" disabled />
                     </div>
                   </div>
                 </li>
@@ -196,7 +199,7 @@ let imgUrl = `https://flagcdn.com/24x18/${nat.toLowerCase()}.png`;
                     >
                       <input
                         :type="passwordType ? 'password' : 'text'"
-                        :value="login.password"
+                        :value="props.person.login.password"
                         disabled
                       />
                       <div>

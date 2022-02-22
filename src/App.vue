@@ -86,7 +86,7 @@ watchEffect(async () => {
     <Navbar />
     <div class="container mx-auto h-full pt-20 pb-10 flex flex-col gap-2 pl-2 pr-2">
       <!-- Top Selectors -->
-      <div class="grid grid-cols-3 grid-rows-1 gap-4">
+      <div v-if="!singlePerson" class="grid grid-cols-3 grid-rows-1 gap-4">
         <SelectInput
           name="gender-selector"
           id="gender-selector"
@@ -121,7 +121,9 @@ watchEffect(async () => {
       />
       <!-- Container -->
       <div
-        class="container mx-auto bg-gray-200 rounded-lg flex-grow overflow-y-auto overflow-auto"
+        :class="`container mx-auto bg-gray-200 rounded-lg flex-grow ${
+          showTable ? '' : 'overflow-y-auto overflow-auto'
+        }`"
       >
         <!-- Loading -->
         <div
